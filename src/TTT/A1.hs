@@ -12,7 +12,7 @@ _DISPLAY_LOGO_ = True
 
 -- Q#03
 convertRowIndex :: Char -> Int
-convertRowIndex c = fromEnum (toUpper c) - 65
+convertRowIndex char = fromEnum (toUpper char) - 65
 
 -- Q#04
 _INVALID_MOVE_ :: (Int,Int)
@@ -23,11 +23,12 @@ _SEP_ :: String
 _SEP_ = "_|_"
 
 -- Q#06
-data Square = O | X | B 
+-- E == Empty
+data Square = O | E | X 
                 deriving (Show, Eq) 
 
 -- Q#07
-data GameState = XWon | OWon | Tie | Prog
+data GameState = X_Won | O_Won | Tie | Progress
                     deriving (Show, Eq)
                     
 -- Q#08
@@ -39,30 +40,30 @@ type Move   = (Int,Int)
 
 -- Q#09
 getFirstPlayer :: Bool -> Player
-getFirstPlayer b = if b
-                        then X
-                        else O
+getFirstPlayer bool = if bool
+                            then X
+                            else O
 
 getFirstPlayer_ :: Bool -> Player
-getFirstPlayer_ b | b         = X
-                  | otherwise = O
+getFirstPlayer_ bool | bool         = X
+                     | otherwise = O
 
 -- Q#10
 showGameState :: GameState -> String
-showGameState gs = case gs of 
-                        XWon -> "X player wins!"
-                        OWon -> "O Player wins!"
-                        Tie  -> "Game is a tie."
-                        Prog -> "Game is still in progress." 
+showGameState gamestate = case gamestate of 
+                                X_Won     -> "X player wins!"
+                                O_Won     -> "O Player wins!"
+                                Tie       -> "Game is a tie."
+                                Progress  -> "Game is still in progress." 
 
 -- Q#11
 switchPlayer :: Player -> Player
-switchPlayer p | p == X    = O
-               | p == O    = X 
-               | otherwise = B
+switchPlayer player | player == X = O
+                    | player == O = X 
+                    | otherwise   = E
                 
 -- Q#12
 showSquare :: Square -> String
-showSquare s | s == X    = "X"
-             | s == O    = "O"
-             | otherwise = "_"
+showSquare square | square == X = "X"
+                  | square == O = "O"
+                  | otherwise   = "_"
