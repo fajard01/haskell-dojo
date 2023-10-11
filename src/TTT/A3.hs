@@ -5,14 +5,17 @@ import TTT.A1
 import TTT.A2
 
 -- Q#01
+showInts :: [Int] -> [String]
+showInts []     = []
+showInts (x:xs) = show x : showInts xs
 
-showInts = undefined
-
-_HEADER_ = undefined
+_HEADER_ :: String
+_HEADER_ = " " ++ formatLine (showInts _RANGE_)
 
 -- Q#02
-
-showSquares = undefined
+showSquares :: [Square] -> [String]
+showSquares []     = []
+showSquares (x:xs) = showSquare x : showSquares xs 
 
 -- Q#03
 

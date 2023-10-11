@@ -28,7 +28,7 @@ data Square = O | E | X
                 deriving (Show, Eq) 
 
 -- Q#07
-data GameState = X_Won | O_Won | Tie | Progress
+data GameState = X_Wins | O_Wins | Draw | In_Progress
                     deriving (Show, Eq)
                     
 -- Q#08
@@ -51,10 +51,10 @@ getFirstPlayer_ bool | bool         = X
 -- Q#10
 showGameState :: GameState -> String
 showGameState gamestate = case gamestate of 
-                                X_Won     -> "X player wins!"
-                                O_Won     -> "O Player wins!"
-                                Tie       -> "Game is a tie."
-                                Progress  -> "Game is still in progress." 
+                                X_Wins       -> "X player wins!"
+                                O_Wins       -> "O Player wins!"
+                                Draw         -> "Game is a tie."
+                                In_Progress  -> "Game is still in progress." 
 
 -- Q#11
 switchPlayer :: Player -> Player
