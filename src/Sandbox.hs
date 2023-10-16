@@ -1,4 +1,17 @@
 module Sandbox where
+    ---------------
+    fib 0 = 0
+    fib 1 = 1
+    fib n = fib (n-1) + fib (n-2)
+
+    fib' 0 = 0
+    fib' 1 = 1
+    fib' 2 = 1
+    fib' n = fastFib 1 1 n
+                where
+                    fastFib x y n | n == 3    = x + y
+                                  | otherwise = fastFib y (x+y) (n-1)
+    
     ----------------
     ackermann 0 n = n + 1
     ackermann m 0 = ackermann (m-1) 1

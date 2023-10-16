@@ -35,7 +35,7 @@ isTied board = if E `elem` concat board
 
 _TIED_BOARD_ :: Board
 _TIED_BOARD_ = [ [X,O,O]
-               , [O,O,X]
+               , [O,X,X]
                , [O,X,O]
                ]
 
