@@ -1,6 +1,6 @@
 module TTT.A3 where
 
-import Data.List (transpose)
+import Data.List
 import TTT.A1
 import TTT.A2
 
@@ -18,39 +18,68 @@ showSquares []     = []
 showSquares (x:xs) = showSquare x : showSquares xs 
 
 -- Q#03
-
-formatRows = undefined
+formatRows :: [Row] -> [String]
+formatRows []          = []
+formatRows (row:rows) = formatLine (showSquares row) : formatRows rows
 
 -- Q#04
-
-isColEmpty = undefined
-
+isColEmpty :: Row -> Int -> Bool
+isColEmpty row index | null row                         = False
+                     | index < 0 || index >= length row = False 
+                     | otherwise                        = if row !! index == E 
+                                                                then True
+                                                                else False
 -- Q#05
+dropFirstCol :: Board -> Board
+dropFirstCol []         = []
+dropFirstCol (row:rows) = tail row : dropFirstCol rows 
 
-dropFirstCol = undefined
-
-dropLastCol = undefined
+dropLastCol :: Board -> Board
+dropLastCol []         = []
+dropLastCol (row:rows) = init row : dropLastCol rows 
 
 -- Q#06
+getDiag1 :: Board -> Line
+getDiag1 []         = []
+getDiag1 (row:rows) = head row : getDiag1 (dropFirstCol rows)  
 
-getDiag1 = undefined
+getDiag2 :: Board -> Line
+getDiag2 []         = []
+getDiag2 (row:rows) = last row : getDiag2 (dropLastCol rows)
 
-getDiag2 = undefined
-
-getAllLines = undefined
+getAllLines :: Board -> [Line]
+getAllLines board = concat (board : transpose board : [getDiag1 board] : [getDiag2 board] : [])
 
 -- Q#07
-
-putSquare = undefined
+putSquare :: Player -> Board -> Move -> Board
+putSquare _      []         _     = []
+putSquare player (row:rows) (x,y) | x == 0    = replaceSquareInRow player y row : rows
+                                  | otherwise = row : putSquare player rows (x-1,y)
 
 -- Q#08
-
-prependRowIndices = undefined
+prependRowIndices :: [String] -> [String]
+prependRowIndices []      = []
+prependRowIndices strings = prependIndex indexRows
+                                where
+                                    indexRows :: [(Char,String)]
+                                    indexRows = indexRowStrings strings
+                                    prependIndex :: [(Char,String)] -> [String]
+                                    prependIndex []               = []
+                                    prependIndex ((index,row):xs) = (index:row) : prependIndex xs
 
 -- Q#09
-
-isWinningLine_ = undefined
-
+isWinningLine :: Player -> Line -> Bool
+isWinningLine player []   = False
+isWinningLine player line = lineWin player line
+                                where
+                                    lineWin :: Player -> Line -> Bool
+                                    lineWin player [] = True
+                                    lineWin player (square:squares) | square /= player = False 
+                                                                    | otherwise        = lineWin player squares
+                                                                          
 -- Q#10
-
-isValidMove = undefined
+isValidMove :: Board -> Move -> Bool
+isValidMove []         _     = False
+isValidMove (row:rows) (x,y) | isMoveInBounds (x,y) == False = False
+                             | x == 0                        = isColEmpty row y
+                             | otherwise                     = isValidMove rows (x-1,y) 

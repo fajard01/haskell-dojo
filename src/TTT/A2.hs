@@ -49,9 +49,8 @@ formatLine xss = _SEP_ ++ intercalate _SEP_ xss ++ _SEP_
 
 -- Q#08
 isMoveInBounds :: Move -> Bool
-isMoveInBounds move = (fst move `elem` index) && (snd move `elem` index)
-                         where
-                             index = [0.._SIZE_]
+isMoveInBounds move = (fst move >= 0 && fst move < _SIZE_) &&
+                      (snd move >= 0 && snd move < _SIZE_)
 
 -- Q#09
 stringToMove :: String -> Move
