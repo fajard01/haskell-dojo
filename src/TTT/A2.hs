@@ -57,9 +57,10 @@ stringToMove :: String -> Move
 stringToMove (x:y:xs) | xs /= []  = _INVALID_MOVE_
                       | otherwise = (toInt x, toInt y)
                             where
-                                toInt c = if isDigit c
-                                                then readDigit c
-                                                else convertRowIndex c
+                                toInt :: Char -> Int
+                                toInt char = if isDigit char
+                                                then readDigit char
+                                                else convertRowIndex char 
 
 -- Q#10
 replaceSquareInRow :: Player -> Int -> Row -> Row
