@@ -45,7 +45,7 @@ getFirstPlayer bool = if bool
                             else O
 
 getFirstPlayer_ :: Bool -> Player
-getFirstPlayer_ bool | bool         = X
+getFirstPlayer_ bool | bool      = X
                      | otherwise = O
 
 -- Q#10
