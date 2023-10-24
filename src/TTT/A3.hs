@@ -70,12 +70,14 @@ prependRowIndices strings = prependIndex indexRows
 -- Q#09
 isWinningLine_ :: Player -> Line -> Bool
 isWinningLine_ player []   = False
-isWinningLine_ player line = lineWin player line
-                                where
-                                    lineWin :: Player -> Line -> Bool
-                                    lineWin player [] = True
-                                    lineWin player (square:squares) | square /= player = False
-                                                                    | otherwise        = lineWin player squares
+isWinningLine_ player line =
+    isWinningLine_' player line
+        where
+            isWinningLine_' :: Player -> Line -> Bool
+            isWinningLine_'player [] = True
+            isWinningLine_' player (square:squares) 
+                | square /= player = False
+                | otherwise        = isWinningLine_' player squares
 
 -- Q#10
 isValidMove :: Board -> Move -> Bool

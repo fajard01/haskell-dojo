@@ -68,13 +68,15 @@ play board player =
                                         where 
                                              continueGame :: IO ()
                                              continueGame =
+                                                  putStrLn "" >>
                                                   putStrLn (showGameState newState) >>
                                                   putStrLn "" >>
                                                   play' newBoard (switchPlayer player')
                                              endGame :: IO ()
                                              endGame =
                                                   printBoard newBoard >>
-                                                  putStrLn (showGameState newState) 
+                                                  putStrLn (showGameState newState) >>
+                                                  putStrLn ""
 
 -- Q#06
 
@@ -118,7 +120,7 @@ playDo board player = do
                playDo' :: Board -> Player -> IO ()
                playDo' board' player' = do 
                     printBoard board'
-                    putStrLn (promptPlayer player') 
+                    putStrLn $ promptPlayer player' 
                     move <- getMove board'
                     (mvstate, mvboard) <- processMove move
                     updateGame (mvstate, mvboard)
@@ -140,6 +142,7 @@ playDo board player = do
                                         where 
                                              continueGame :: IO ()
                                              continueGame = do
+                                                  putStrLn ""
                                                   putStrLn (showGameState newState)
                                                   putStrLn ""
                                                   playDo' newBoard (switchPlayer player')
@@ -147,3 +150,4 @@ playDo board player = do
                                              endGame = do
                                                   printBoard newBoard
                                                   putStrLn (showGameState newState) 
+                                                  putStrLn ""

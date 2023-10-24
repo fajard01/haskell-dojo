@@ -54,7 +54,7 @@ showGameState gamestate = case gamestate of
                                 X_Wins       -> "X player wins!"
                                 O_Wins       -> "O Player wins!"
                                 Draw         -> "Game is a tie."
-                                In_Progress  -> "Game is still in progress." 
+                                In_Progress  -> "Game continues..." 
 
 -- Q#11
 switchPlayer :: Player -> Player
