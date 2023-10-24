@@ -74,7 +74,7 @@ isWinningLine_ player line =
     isWinningLine_' player line
         where
             isWinningLine_' :: Player -> Line -> Bool
-            isWinningLine_'player [] = True
+            isWinningLine_' player [] = True
             isWinningLine_' player (square:squares) 
                 | square /= player = False
                 | otherwise        = isWinningLine_' player squares
