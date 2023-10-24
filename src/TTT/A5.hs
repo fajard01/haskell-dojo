@@ -143,11 +143,11 @@ playDo board player = do
                                              continueGame :: IO ()
                                              continueGame = do
                                                   putStrLn ""
-                                                  putStrLn (showGameState newState)
+                                                  putStrLn $ showGameState newState
                                                   putStrLn ""
                                                   playDo' newBoard (switchPlayer player')
                                              endGame :: IO ()
                                              endGame = do
                                                   printBoard newBoard
-                                                  putStrLn (showGameState newState) 
+                                                  putStrLn $ showGameState newState 
                                                   putStrLn ""
