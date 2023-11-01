@@ -1,5 +1,10 @@
 module Sandbox where
     ---------------
+    import Debug.Trace (trace)
+    tracy_l = foldl (\a h -> trace (concat ["a = ", show a, " (-) h = ", show h]) a - h) 0 [1,2,3,4]
+    tracy_r = foldr (\a h -> trace (concat ["a = ", show a, " (-) h = ", show h]) a - h) 0 [1,2,3,4]
+
+    ---------------
     robot (name,attack,hp)  = \message -> message (name,attack,hp)
     name (n,_,_)   = n
     attack (_,a,_) = a

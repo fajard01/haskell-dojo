@@ -49,7 +49,7 @@ play board player =
                     putStrLn (promptPlayer player') >> 
                     getMove board' >>=
                     (\move -> processMove move) >>=
-                    (\(mvstate,mvboard) -> updateGame (mvstate, mvboard))
+                    (\(mvstate,mvboard) -> updateGame (mvstate,mvboard))
                          where
                               processMove :: Move -> IO (GameState, Board)
                               processMove move'
