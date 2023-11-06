@@ -6,43 +6,80 @@ import HM.A6
 import HM.A7 hiding (validateNoDict, validateWithDict)
 import HM.Provided
 import System.Directory (doesFileExist)
+import Data.Either (fromLeft)
+import GHC.IO.Handle.Text (hPutStrLn)
 
 -- Q#01
-
-getUpperChar = undefined
+getUpperChar :: IO Char
+getUpperChar = fmap toUpper getChar
 
 -- Q#02
-
+_DICT_ :: IO Dictionary
 _DICT_ = do
-  fileExists <- doesFileExist _DICT_FILE_
-  if fileExists then undefined else undefined
+    fileExists <- doesFileExist _DICT_FILE_
+    if fileExists
+        then return words <*> readFile _DICT_FILE_
+        else pure []
 
 isDictNonEmpty :: IO Bool
-isDictNonEmpty = undefined
+isDictNonEmpty = not . null <$> _DICT_
 
 -- Q#03
-
-makeGameIfValid = undefined
-
+makeGameIfValid :: Either GameException Secret -> Either GameException Game
+makeGameIfValid eGame = case eGame of
+                            Left eException -> Left eException
+                            Right eSecret   -> Right $ makeGame eSecret
 -- Q#04
-
-getDict = undefined
+getDict :: IO (Maybe Dictionary)
+getDict = toMaybe <$> isDictNonEmpty <*> _DICT_
 
 -- Q#05
+validateNoDict :: Secret -> Either GameException Secret
+validateNoDict secret = hasValidChars secret >>= isValidLength
 
-validateNoDict = undefined
-
-validateWithDict = undefined
+validateWithDict :: Dictionary -> Secret -> Either GameException Secret
+validateWithDict dictionary secret = validateNoDict secret >>= isInDict dictionary
 
 -- Q#06
-
-playGame = undefined
+playGame :: Game -> IO ()
+playGame game = do
+        promptGuess
+        guessMove <- getUpperChar
+        _SPACE_
+        case processTurn guessMove game of
+            Left GameOver     -> print GameOver >>
+                                 putStr "The secret word is: " >>
+                                 putStrLn (getSecret game)
+            Left InvalidMove  -> print InvalidMove >>
+                                 putStrLn "Try again." >>
+                                 playGame game
+            Left RepeatMove   -> print RepeatMove >>
+                                 putStrLn "Try again." >>
+                                 playGame game
+            Right updatedGame -> do print updatedGame
+                                    if getGuess updatedGame == getSecret game
+                                        then putStrLn "You win!"
+                                        else putStrLn "Game continues." >>
+                                             playGame updatedGame
 
 -- Q#07
-
-startGame = undefined
+startGame :: (Secret -> Either GameException Secret) -> IO ()
+startGame secretValidate = do
+        inputSecret <- secretValidate <$> setSecret
+        case makeGameIfValid inputSecret of
+                Left eException -> print eException >>
+                                   startGame secretValidate
+                Right eNewGame  -> print eNewGame >>
+                                   playGame eNewGame
 
 -- Q#08
 
 runHM :: IO ()
-runHM = putStrLn "Not implemented... yet!"
+runHM = do --putStrLn "Not implemented... yet!"
+           mDictionary <- getDict
+           case mDictionary of
+                Just dictionary -> startGame $ validateWithDict dictionary
+                Nothing         -> do putStrLn "Missing dictionary! Continue without dictionary? [Y/N]"
+                                      continue <- getUpperChar
+                                      when (continue == 'Y') $ startGame validateNoDict
+                                      

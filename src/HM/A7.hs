@@ -34,8 +34,8 @@ updateGame move game = Game { getSecret  = getSecret game
 
 -- Q#05
 instance Show Game where
-  show :: Game -> String
-  show game = showGameHelper currentGuess currentMoves currentChances
+    show :: Game -> String
+    show game = showGameHelper currentGuess currentMoves currentChances
                   where
                       currentGuess :: Guess
                       currentGuess   = getGuess game
@@ -43,8 +43,9 @@ instance Show Game where
                       currentMoves   = if null moves 
                                           then "[]"
                                           else moves
-                                            where
-                                                moves = getMoves game
+                                                where
+                                                    moves :: [Move]
+                                                    moves = getMoves game
                       currentChances :: Chances
                       currentChances = getChances game
 
@@ -61,15 +62,18 @@ showGameHelper game moves chances =
 -- Q#06
 instance Show GameException where
     show :: GameException -> String
-    show InvalidChars  = "Error! : invalid characters in string"
-    show InvalidLength = concat ["Error! : string length must be between ", lb, " and ", ub]
-                            where
-                                lb = show $ fst _LENGTH_
-                                ub = show $ snd _LENGTH_
-    show NotInDict     = "Error! : word is not in the dictionary"
-    show InvalidMove   = "Error! : move is invalid" 
-    show RepeatMove    = "Error! : this is a repeated move"
-    show GameOver      = "Error! : out of chances, game is over"
+    show InvalidChars  = "Invalid Characters Exception: There are invalid characters in the input."
+    show InvalidLength = 
+        concat ["Invalid String Length Exception: Secret word length must be between ", lb, " and ", ub, "."]
+            where
+                lb :: String
+                lb = show $ fst _LENGTH_
+                ub :: String
+                ub = show $ snd _LENGTH_
+    show NotInDict     = "Not In Dictionary Exception: Word is not found in the dictionary."
+    show InvalidMove   = "Invalid Move Eception: Move input is invalid." 
+    show RepeatMove    = "Repeated Move Exception: This move has been entered previously."
+    show GameOver      = "Game Over Exception: No more chances left. Game is lost."
 
 
 -- Q#07
@@ -99,10 +103,14 @@ isInDict dictionary = validateSecret (\xs -> map toLower xs `elem` dictionary) N
 
 -- Q#10
 validateNoDict :: Secret -> Either GameException Secret
-validateNoDict secret = hasValidChars secret >>= isValidLength
+validateNoDict secret = case hasValidChars secret of
+                            Left eException -> Left eException
+                            Right eSecret   -> isValidLength eSecret
 
 validateWithDict :: Dictionary -> Secret -> Either GameException Secret
-validateWithDict dictionary secret = validateNoDict secret >>= isInDict dictionary
+validateWithDict dictionary secret = case validateNoDict secret of
+                                            Left eException -> Left eException
+                                            Right eSecret   -> isInDict dictionary eSecret
 
 -- Q#11
 processTurn :: Move -> Game -> Either GameException Game
@@ -112,4 +120,5 @@ processTurn move game
     | getChances updatedGame == 0 = Left GameOver
     | otherwise                   = Right updatedGame
         where
+            updatedGame :: Game
             updatedGame = updateGame move game

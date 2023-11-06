@@ -1,6 +1,14 @@
+
 module Sandbox where
-    ---------------
     import Debug.Trace (trace)
+
+    ---------------
+    zipWith' f [] _          = []
+    zipWith' f _ []          = []
+    zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+
+    ---------------
     tracy_l = foldl (\a h -> trace (concat ["a = ", show a, " (-) h = ", show h]) a - h) 0 [1,2,3,4]
     tracy_r = foldr (\a h -> trace (concat ["a = ", show a, " (-) h = ", show h]) a - h) 0 [1,2,3,4]
 
