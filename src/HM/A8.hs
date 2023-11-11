@@ -6,8 +6,12 @@ import HM.A6
 import HM.A7 hiding (validateNoDict, validateWithDict)
 import HM.Provided
 import System.Directory (doesFileExist)
+import System.Random (randomRIO, Random (random))
 import Data.Either (fromLeft)
+import Data.Maybe
 import GHC.IO.Handle.Text (hPutStrLn)
+import Debug.Trace (trace)
+import GHC.IO.Device (IODeviceType(Directory))
 
 -- Q#01
 getUpperChar :: IO Char
@@ -71,15 +75,26 @@ startGame secretValidate = do
                                    startGame secretValidate
                 Right eNewGame  -> print eNewGame >>
                                    playGame eNewGame
-
--- Q#08
+-- -- Q#08
 
 runHM :: IO ()
 runHM = do --putStrLn "Not implemented... yet!"
-           mDictionary <- getDict
-           case mDictionary of
-                Just dictionary -> startGame $ validateWithDict dictionary
-                Nothing         -> do putStrLn "Missing dictionary! Continue without dictionary? [Y/N]"
-                                      continue <- getUpperChar
-                                      when (continue == 'Y') $ startGame validateNoDict
-                                      
+    mDictionary <- getDict
+    case mDictionary of
+        Just dictionary -> startGame $ validateWithDict dictionary
+        Nothing         -> do putStrLn "Missing dictionary! Continue without dictionary? [Y/N]"
+                              continue <- getUpperChar
+                              when (continue == 'Y') $ startGame validateNoDict
+                                
+-- Extra: Starts a random game by random pick from dictionary
+runRandomHM :: IO ()
+runRandomHM = do 
+    mDictionary <- getDict
+    case mDictionary of
+        Just dictionary -> do rIndex  <- randomRIO (0, length dictionary - 1)
+                              let rSecret = dictionary !! rIndex
+                                  rGame   = makeGame rSecret
+                              playGame rGame 
+        Nothing         -> do putStrLn "Unable to locate dictionaru."
+                              putStrLn "Game end. Try playing regular Hangman instead."
+                        

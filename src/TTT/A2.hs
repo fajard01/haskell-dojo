@@ -55,8 +55,9 @@ isMoveInBounds move = (fst move >= 0 && fst move < _SIZE_) &&
 -- Q#09
 stringToMove :: String -> Move
 stringToMove []       = _INVALID_MOVE_
-stringToMove (x:y:xs) | xs /= []      = _INVALID_MOVE_
-                      | otherwise     = (toInt x, toInt y)
+stringToMove [x]      = _INVALID_MOVE_
+stringToMove (x:y:xs) | xs /= []  = _INVALID_MOVE_
+                      | otherwise = (toInt x, toInt y)
                             where
                                 toInt :: Char -> Int
                                 toInt char = if isDigit char

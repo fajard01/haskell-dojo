@@ -3,7 +3,7 @@ module Main where
 import Data.Foldable (traverse_)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
-import HM.A8 (runHM)
+import HM.A8 (runHM, runRandomHM)
 import System.IO (BufferMode (..), hSetBuffering, stdout, stdin)
 import TTT.A5 (runTTT)
 import Text.Printf (printf)
@@ -17,7 +17,8 @@ apps =
     zip
       [1 ..]
       [ App "Tic-Tac-Toe" runTTT,
-        App "Hangman" runHM
+        App "Hangman" runHM,
+        App "Random Hangman" runRandomHM
       ]
 
 printApp :: (Int, App) -> IO ()
