@@ -91,10 +91,10 @@ runRandomHM :: IO ()
 runRandomHM = do 
     mDictionary <- getDict
     case mDictionary of
-        Just dictionary -> do rIndex  <- randomRIO (0, length dictionary - 1)
+        Just dictionary -> do rIndex <- randomRIO (0, length dictionary - 1)
                               let rSecret = dictionary !! rIndex
                                   rGame   = makeGame rSecret
                               playGame rGame 
-        Nothing         -> do putStrLn "Unable to locate dictionaru."
-                              putStrLn "Game end. Try playing regular Hangman instead."
+        Nothing         -> do putStrLn "Unable to locate dictionary."
+                              putStrLn "Game ends here. Try playing regular Hangman instead."
                         
