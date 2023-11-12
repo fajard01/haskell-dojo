@@ -35,7 +35,7 @@ makeGameIfValid eGame = case eGame of
                             Right eSecret   -> Right $ makeGame eSecret
 -- Q#04
 getDict :: IO (Maybe Dictionary)
-getDict = toMaybe <$> isDictNonEmpty <*> _DICT_
+getDict = return Nothing -- toMaybe <$> isDictNonEmpty <*> _DICT_
 
 -- Q#05
 validateNoDict :: Secret -> Either GameException Secret
@@ -84,6 +84,7 @@ runHM = do --putStrLn "Not implemented... yet!"
         Just dictionary -> startGame $ validateWithDict dictionary
         Nothing         -> do putStrLn "Missing dictionary! Continue without dictionary? [Y/N]"
                               continue <- getUpperChar
+                              _SPACE_
                               when (continue == 'Y') $ startGame validateNoDict
                                 
 -- Extra: Starts a random game by random pick from dictionary
@@ -96,6 +97,9 @@ runRandomHM = do
                                   rGame   = makeGame rSecret
                               print rGame
                               playGame rGame 
-        Nothing         -> do putStrLn "Unable to locate dictionary."
-                              putStrLn "Game ends here. Try playing regular Hangman instead."
+        Nothing         -> do putStrLn "Missing dictionary! Secret word needs to be entered."
+                              putStrLn "Continue without dictionary? [Y/N]"
+                              continue <- getUpperChar
+                              _SPACE_
+                              when (continue == 'Y') $ startGame validateNoDict
                         
