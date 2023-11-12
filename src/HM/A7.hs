@@ -71,7 +71,7 @@ instance Show GameException where
                 ub :: String
                 ub = show $ snd _LENGTH_
     show NotInDict     = "Not In Dictionary Exception: Word is not found in the dictionary."
-    show InvalidMove   = "Invalid Move Eception: Move input is invalid." 
+    show InvalidMove   = "Invalid Move Exception: Move input is invalid." 
     show RepeatMove    = "Repeated Move Exception: This move has been entered previously."
     show GameOver      = "Game Over Exception: No more chances left. Game is lost."
 
