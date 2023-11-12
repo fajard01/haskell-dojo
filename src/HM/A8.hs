@@ -35,7 +35,7 @@ makeGameIfValid eGame = case eGame of
                             Right eSecret   -> Right $ makeGame eSecret
 -- Q#04
 getDict :: IO (Maybe Dictionary)
-getDict = return Nothing -- toMaybe <$> isDictNonEmpty <*> _DICT_
+getDict = toMaybe <$> isDictNonEmpty <*> _DICT_
 
 -- Q#05
 validateNoDict :: Secret -> Either GameException Secret
