@@ -54,25 +54,20 @@ isMoveInBounds move = (fst move >= 0 && fst move < _SIZE_) &&
 
 -- Q#09
 stringToMove :: String -> Move
-stringToMove []       = _INVALID_MOVE_
-stringToMove [x]      = _INVALID_MOVE_
-stringToMove (x:y:xs) | xs /= []  = _INVALID_MOVE_
-                      | otherwise = (toInt x, toInt y)
-                            where
-                                toInt :: Char -> Int
-                                toInt char = if isDigit char
-                                                then readDigit char
-                                                else convertRowIndex char
+stringToMove [x,y] = (convertRowIndex x, readDigit y)
+stringToMove _     = _INVALID_MOVE_
+
 
 -- Q#10
 replaceSquareInRow :: Player -> Int -> Row -> Row
-replaceSquareInRow player index row | index < 0 || index > length row-1 = row
-                                    | otherwise                         = xs ++ [player] ++ ys
-                                        where
-                                            (xs,y:ys) = splitAt index row
+replaceSquareInRow player index row 
+    | index < 0 || index > length row - 1 = row
+    | otherwise                           = xs ++ [player] ++ ys
+        where
+            (xs,y:ys) = splitAt index row
 
 rsX :: Int -> Row -> Row
-rsX index row = replaceSquareInRow X index row
+rsX = replaceSquareInRow X
 
 rsO :: Int -> Row -> Row
-rsO index row = replaceSquareInRow O index row
+rsO = replaceSquareInRow O
