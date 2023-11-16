@@ -79,6 +79,7 @@ startGame secretValidate = do
 
 runHM :: IO ()
 runHM = do --putStrLn "Not implemented... yet!"
+    putStrLn _LOGO_
     mDictionary <- getDict
     case mDictionary of
         Just dictionary -> startGame $ validateWithDict dictionary
@@ -90,6 +91,7 @@ runHM = do --putStrLn "Not implemented... yet!"
 -- Extra: Starts a random game by random pick from dictionary
 runRandomHM :: IO ()
 runRandomHM = do 
+    putStrLn _LOGO_
     mDictionary <- getDict
     case mDictionary of
         Just dictionary -> do rIndex <- randomRIO (0, length dictionary - 1)

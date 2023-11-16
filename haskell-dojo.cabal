@@ -25,6 +25,7 @@ executable haskell-dojo
       , TTT.A3
       , TTT.A4
       , TTT.A5
+      , TTT.Minimax
       , HM.A6
       , HM.A7
       , HM.A8
