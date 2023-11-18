@@ -6,7 +6,9 @@ import TTT.A1
 import TTT.A2
 import TTT.A3
 import TTT.A4
+import TTT.Minimax
 import Foreign (toBool)
+import HM.Provided (_SPACE_)
 
 -- Q#01
 printBoard :: Board -> IO ()
@@ -40,7 +42,7 @@ getMove board = getLine >>=
 play :: Board -> Player -> IO ()
 play board player = 
      when _DISPLAY_LOGO_ printLogo >>
-     putStrLn "" >>      -- mainly cosmetic 
+     _SPACE_ >>     
      play' board player
           where
                play' :: Board -> Player -> IO ()
@@ -68,15 +70,15 @@ play board player =
                                         where 
                                              continueGame :: IO ()
                                              continueGame =
-                                                  putStrLn "" >>
+                                                  _SPACE_ >>
                                                   putStrLn (showGameState newState) >>
-                                                  putStrLn "" >>
+                                                  _SPACE_ >>
                                                   play' newBoard (switchPlayer player')
                                              endGame :: IO ()
                                              endGame =
                                                   printBoard newBoard >>
                                                   putStrLn (showGameState newState) >>
-                                                  putStrLn ""
+                                                  _SPACE_
 
 -- Q#06
 
@@ -114,7 +116,7 @@ getMoveDo board = do
 playDo :: Board -> Player -> IO ()
 playDo board player = do
      when _DISPLAY_LOGO_ printLogo
-     putStrLn ""
+     _SPACE_
      playDo' board player
           where
                playDo' :: Board -> Player -> IO ()
@@ -142,12 +144,66 @@ playDo board player = do
                                         where 
                                              continueGame :: IO ()
                                              continueGame = do
-                                                  putStrLn ""
+                                                  _SPACE_
                                                   putStrLn $ showGameState newState
-                                                  putStrLn ""
+                                                  _SPACE_
                                                   playDo' newBoard (switchPlayer player')
                                              endGame :: IO ()
                                              endGame = do
                                                   printBoard newBoard
                                                   putStrLn $ showGameState newState 
-                                                  putStrLn ""
+                                                  _SPACE_
+
+-- Extra: Implementation to play TicTacToe vs Computer
+playComputer :: Board -> Player -> IO ()
+playComputer board player = do
+     when _DISPLAY_LOGO_ printLogo
+     _SPACE_
+     putStrLn "You are playing against the computer"
+     putStrLn "You will start as player O and computer plays as player X"
+     _SPACE_
+     playComputer' board player
+          where
+               playComputer' :: Board -> Player -> IO ()
+               playComputer' board' player' 
+                    | player' == O = 
+                         do printBoard board'
+                            putStrLn $ promptPlayer player' 
+                            move <- getMove board'
+                            (mvstate, mvboard) <- processMove move
+                            updateGame (mvstate, mvboard)
+                    | player' == X =
+                         do printBoard board'
+                            putStrLn "Calculating best move ..." 
+                            (mvstate, mvboard) <- playComputerMove player' board'
+                            updateGame (mvstate, mvboard)
+                                   where
+                                        processMove :: Move -> IO (GameState, Board)
+                                        processMove move'
+                                             | square /= E = do
+                                                  putStrLn "Move invalid. Try again." 
+                                                  return (getGameState board', board')             
+                                             | otherwise   = do
+                                                  return $ playMove player' board' move' 
+                                                       where 
+                                                            square :: Square
+                                                            square = board' !! fst move' !! snd move'
+                                        updateGame :: (GameState, Board) -> IO () 
+                                        updateGame (newState, newBoard) 
+                                             | newState == In_Progress = do continueGame
+                                             | otherwise               = do endGame
+                                                  where 
+                                                       continueGame :: IO ()
+                                                       continueGame = do
+                                                            _SPACE_
+                                                            putStrLn $ showGameState newState
+                                                            _SPACE_
+                                                            playComputer' newBoard (switchPlayer player')
+                                                       endGame :: IO ()
+                                                       endGame = do
+                                                            printBoard newBoard
+                                                            putStrLn $ showGameState newState 
+                                                            _SPACE_
+
+runTTTvsComputer :: IO ()
+runTTTvsComputer = playComputer _EMPTY_BOARD_ O

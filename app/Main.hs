@@ -5,7 +5,7 @@ import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import HM.A8 (runHM, runRandomHM)
 import System.IO (BufferMode (..), hSetBuffering, stdout, stdin)
-import TTT.A5 (runTTT)
+import TTT.A5 (runTTT, runTTTvsComputer)
 import Text.Printf (printf)
 import Text.Read (readMaybe)
 
@@ -17,6 +17,7 @@ apps =
     zip
       [1 ..]
       [ App "Tic-Tac-Toe" runTTT,
+        App "Tic-Tac-Toe vs Computer" runTTTvsComputer,
         App "Hangman" runHM,
         App "Random Hangman" runRandomHM
       ]

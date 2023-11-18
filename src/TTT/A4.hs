@@ -55,11 +55,11 @@ hasWon player board = foldr (\line bool -> isWinningLine player line || bool) Fa
 getGameState :: Board -> GameState
 getGameState board | hasWon X board           = X_Wins
                    | hasWon O board           = O_Wins
-                   | E `notElem` concat board = Draw
+                   | E `notElem` concat board = Is_Draw
                    | otherwise                = In_Progress
 
 playMove :: Player -> Board -> Move -> (GameState, Board)
-playMove _      []     _   = (Draw, [])
+playMove _      []     _   = (Is_Draw, [])
 playMove player board move = (newState, updatedBoard)
                                 where
                                     updatedBoard :: Board

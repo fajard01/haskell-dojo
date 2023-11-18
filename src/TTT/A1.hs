@@ -24,11 +24,11 @@ _SEP_ = "_|_"
 
 -- Q#06
 -- E == Empty
-data Square = O | E | X 
-                deriving (Show, Eq) 
+data Square = X | E | O 
+                deriving (Show, Eq, Ord) 
 
 -- Q#07
-data GameState = X_Wins | O_Wins | Draw | In_Progress
+data GameState = X_Wins | O_Wins | Is_Draw | In_Progress
                     deriving (Show, Eq)
                     
 -- Q#08
@@ -53,7 +53,7 @@ showGameState :: GameState -> String
 showGameState gamestate = case gamestate of 
                                 X_Wins       -> "X player wins!"
                                 O_Wins       -> "O Player wins!"
-                                Draw         -> "Game is a tie."
+                                Is_Draw      -> "Game is a tie."
                                 In_Progress  -> "Game continues..." 
 
 -- Q#11
