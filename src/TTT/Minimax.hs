@@ -103,7 +103,7 @@ bestMoveDepths player board =
             tree :: Tree Board
             tree                   = pruneTree _TREE_DEPTH_ (boardTree player board)
             Node (_,best) branches = miniMax tree
-            depth :: Board -> Int
+            depth :: Board -> Depth
             depth b                = pathDepth $ boardTree player b
 
 -- Find the best move by calculating the shortest path from the best moves
