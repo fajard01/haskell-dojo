@@ -50,17 +50,11 @@ play board player =
                     printBoard board' >>
                     putStrLn (promptPlayer player') >> 
                     getMove board' >>=
-                    (\move -> processMove move) >>=
+                    (\move -> return $ playMove player' board' move) >>=
                     (\(mvstate,mvboard) -> updateGame (mvstate,mvboard))
                          where
-                              processMove :: Move -> IO (GameState, Board)
-                              processMove move'
-                                   | isValidMove board' move' =
-                                        return $ playMove player' board' move' 
-                                   | otherwise =
-                                        putStrLn "Move invalid. Try again." >>
-                                        return (getGameState board', board')      
-
+                              
+                                  
                               updateGame :: (GameState, Board) -> IO () 
                               updateGame (newState, newBoard) 
                                    | newState == In_Progress = continueGame
@@ -122,17 +116,11 @@ playDo board player = do
                     printBoard board'
                     putStrLn $ promptPlayer player' 
                     move <- getMove board'
-                    (mvstate, mvboard) <- processMove move
+                    (mvstate, mvboard) <- return $ playMove player' board' move
                     updateGame (mvstate, mvboard)
-                         where
-                              processMove :: Move -> IO (GameState, Board)
-                              processMove move'
-                                   | isValidMove board' move' =
-                                        return $ playMove player' board' move' 
-                                   | otherwise =
-                                        putStrLn "Move invalid. Try again." >>
-                                        return (getGameState board', board')      
-                                               
+                         where    
+
+
                               updateGame :: (GameState, Board) -> IO () 
                               updateGame (newState, newBoard) 
                                    | newState == In_Progress = do continueGame
@@ -167,7 +155,7 @@ playComputer board player = do
                          do printBoard board'
                             putStrLn $ promptPlayer player' 
                             move <- getMove board'
-                            (mvstate, mvboard) <- processMove move
+                            (mvstate, mvboard) <- return $ playMove player' board' move
                             updateGame (mvstate, mvboard)
                     | player' == O =
                          do printBoard board'
@@ -175,14 +163,8 @@ playComputer board player = do
                             (mvstate, mvboard) <- playComputerMove player' board'
                             updateGame (mvstate, mvboard)
                                    where
-                                        processMove :: Move -> IO (GameState, Board)
-                                        processMove move'
-                                              | isValidMove board' move' =
-                                                       return $ playMove player' board' move' 
-                                             | otherwise =
-                                                       putStrLn "Move invalid. Try again." >>
-                                                       return (getGameState board', board')      
-                                               
+
+
                                         updateGame :: (GameState, Board) -> IO () 
                                         updateGame (newState, newBoard) 
                                              | newState == In_Progress = do continueGame
