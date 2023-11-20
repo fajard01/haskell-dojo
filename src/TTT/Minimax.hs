@@ -3,7 +3,9 @@ module TTT.Minimax where
 {-
 The MiniMax Algorithm
 This is an extra module outside of the regular haskell-dojo course.
-This implements a version of tictactoe to play against the  computer by using the minimax algorithm.
+This implements a version of tictactoe to play against the  computer by using the minimax algorithm. 
+ACKNOLEDGEMNT: Graham Hutton from Programming in Haskell for explaining the algorithm and providing 
+an example.
 -}
 
 import TTT.A1
@@ -15,23 +17,29 @@ import TTT.A4 ( getGameState, playMove, showSquares )
 -------------------- Generic Tree Data Structure and Functions --------------------
 
 
--- A tree structure for the board tree
--- Instead of having a separate data constructor for Leaf, Node a [] == Leaf
+{-
+A tree structure for the board tree
+Comprises of a node root of an element and branches derived from the root made up of subtrees. 
+Instead of having a separate data constructor (Leaf | Node a [subtrees]for Leaf, Leaf is a  node
+with no subtree: Leaf == Node a []
+-}
 data Tree a = Node a [Tree a]
                 deriving Show
 
+
+-- A type synonym for distance between root and leaves of branches 
 type Depth = Int
 
--- Specify the depth of tree to be calculated to limit time and memory
+-- A variable to limit depth of tree to be calculated to limit time and memory
 _TREE_DEPTH_ :: Int
 _TREE_DEPTH_ = 9
 
--- Prune the tree to specific depth
+-- A function to prune the tree to a certain depth
 pruneTree :: Int -> Tree a -> Tree a
 pruneTree 0 (Node root _)        = Node root []
 pruneTree n (Node root branches) = Node root [pruneTree (n-1) branch | branch <- branches]
 
--- Calculate the depth of node from root to leaves inclusive of all branches
+-- Calculate the depth of node from root to leaves. note this is inclusive of all branches
 pathDepth :: Tree a -> Depth
 pathDepth (Node root [])       = 1
 pathDepth (Node root branches) = 1 + sum [pathDepth branch | branch <- branches]
@@ -40,14 +48,15 @@ pathDepth (Node root branches) = 1 + sum [pathDepth branch | branch <- branches]
 ------------------------ TicTacToe Minimax Algorithm Implementation ----------------- 
 
 
--- A board tree derived from all allowable board configurations from player's starting node
+-- A board tree that derives all possible board configurations (branches) from player's current node 
 boardTree :: Player -> Board -> Tree Board
 boardTree player board =
     Node board [boardTree (switchPlayer player) board' | board' <- getAllValidBoards player board]
 
 
 -- All possible moves of size _SIZE_
--- Could've been done purely with ints but implemented instead with the spirit of the board implementation
+-- (This ould've been done purely with Int's but implemented instead with the spirit of the haskell-dojo 
+-- assignments
 getAllMoves :: [Move]
 getAllMoves = [(x,y) | x <- rows, y <- cols]
                 where
@@ -56,7 +65,7 @@ getAllMoves = [(x,y) | x <- rows, y <- cols]
                     cols :: [Int]
                     cols = [convertRowIndex c | c <- take _SIZE_ ['a' ..]]
 
--- Generate all possible board configurations by applying all allowed moves by player to current board                    
+-- Generate all possible board configurations by applying all valid moves by player to current board                    
 getAllValidBoards :: Player -> Board -> [Board]
 getAllValidBoards player board =
     case getGameState board of
@@ -71,7 +80,7 @@ getAllValidBoards player board =
 -- Check which players turn it is next by counting the number of player's square in the board
 -- Default first player is X (from getFirstPlayer True)
 nextPlayer :: Board -> Player
-nextPlayer board = if xs < os then X else O
+nextPlayer board = if xs > os then O else X
                     where
                         xs :: Int
                         xs      = length $ filter (==X) squares 
@@ -80,7 +89,12 @@ nextPlayer board = if xs < os then X else O
                         squares :: [Player]
                         squares = concat board
 
--- Minimax Algorithm
+{- 
+Minimax Algorithm
+NOTE: data structure Square needs to be ordered: 
+        data Square O | E | X deriving (Show, Eq, Ord)
+Ord ordering therefore produces O < E < X. This is to insure to calculate minimized O and maximized X
+-}
 miniMax :: Tree Board -> Tree (Board, Player)
 miniMax (Node board []) =
     case getGameState board of
@@ -89,13 +103,15 @@ miniMax (Node board []) =
         Is_Draw     -> Node (board,E) []
         In_Progress -> Node (board,E) []
 miniMax (Node board trees) 
-    | nextPlayer board == X = Node (board, minimum players) trees'
-    | nextPlayer board == O = Node (board, maximum players) trees'
+    | nextPlayer board == X = Node (board, maximum players) trees'
+    | nextPlayer board == O = Node (board, minimum players) trees'
                                 where
                                     trees'  = map miniMax trees
                                     players = [player | Node (_,player) _ <- trees'] 
 
--- A list of best moves for a player given a specific board and calculate depth of each paths
+-- A list of best moves for a player given a specific board and depth of each of its branches
+-- Generate Board Tree -> MiniMax the tree for the player-> Calculate depth of each best move
+-- from the current board 
 bestMoveDepths :: Player -> Board -> [(Depth,Board)]
 bestMoveDepths player board = 
     [(depth board',board') | Node (board',player') branches' <- branches, player' == best]
@@ -107,6 +123,7 @@ bestMoveDepths player board =
             depth b                = pathDepth $ boardTree player b
 
 -- Find the best move by calculating the shortest path from the best moves
+-- The main function to play the game
 playComputerMove :: Player -> Board -> IO (GameState, Board)
 playComputerMove player board = return (getGameState board', board')
                                 where

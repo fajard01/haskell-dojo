@@ -160,19 +160,20 @@ playComputer board player = do
      when _DISPLAY_LOGO_ printLogo
      _SPACE_
      putStrLn "You are playing against the computer"
-     putStrLn "You will start as player O and computer plays as player X"
+     putStrLn "You will start as player X while computer plays as player O"
+     putStrLn "Good luck!"
      _SPACE_
      playComputer' board player
           where
                playComputer' :: Board -> Player -> IO ()
                playComputer' board' player' 
-                    | player' == O = 
+                    | player' == X = 
                          do printBoard board'
                             putStrLn $ promptPlayer player' 
                             move <- getMove board'
                             (mvstate, mvboard) <- processMove move
                             updateGame (mvstate, mvboard)
-                    | player' == X =
+                    | player' == O =
                          do printBoard board'
                             putStrLn "Calculating best move ..." 
                             (mvstate, mvboard) <- playComputerMove player' board'
@@ -206,4 +207,4 @@ playComputer board player = do
                                                             _SPACE_
 
 runTTTvsComputer :: IO ()
-runTTTvsComputer = playComputer _EMPTY_BOARD_ O
+runTTTvsComputer = playComputer _EMPTY_BOARD_ X

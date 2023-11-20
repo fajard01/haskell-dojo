@@ -24,7 +24,7 @@ _SEP_ = "_|_"
 
 -- Q#06
 -- E == Empty
-data Square = X | E | O 
+data Square = O | E | X 
                 deriving (Show, Eq, Ord) 
 
 -- Q#07
