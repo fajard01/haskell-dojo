@@ -55,14 +55,12 @@ play board player =
                          where
                               processMove :: Move -> IO (GameState, Board)
                               processMove move'
-                                   | square /= E =
-                                        putStrLn "Move invalid. Try again." >>
-                                        return (getGameState board', board')             
-                                   | otherwise   =
+                                   | isValidMove board' move' =
                                         return $ playMove player' board' move' 
-                                             where 
-                                                  square :: Square
-                                                  square = board' !! fst move' !! snd move'
+                                   | otherwise =
+                                        putStrLn "Move invalid. Try again." >>
+                                        return (getGameState board', board')      
+
                               updateGame :: (GameState, Board) -> IO () 
                               updateGame (newState, newBoard) 
                                    | newState == In_Progress = continueGame
@@ -129,14 +127,12 @@ playDo board player = do
                          where
                               processMove :: Move -> IO (GameState, Board)
                               processMove move'
-                                   | square /= E = do
-                                        putStrLn "Move invalid. Try again." 
-                                        return (getGameState board', board')             
-                                   | otherwise   = do
+                                   | isValidMove board' move' =
                                         return $ playMove player' board' move' 
-                                             where 
-                                                  square :: Square
-                                                  square = board' !! fst move' !! snd move'
+                                   | otherwise =
+                                        putStrLn "Move invalid. Try again." >>
+                                        return (getGameState board', board')      
+                                               
                               updateGame :: (GameState, Board) -> IO () 
                               updateGame (newState, newBoard) 
                                    | newState == In_Progress = do continueGame
@@ -181,14 +177,12 @@ playComputer board player = do
                                    where
                                         processMove :: Move -> IO (GameState, Board)
                                         processMove move'
-                                             | square /= E = do
-                                                  putStrLn "Move invalid. Try again." 
-                                                  return (getGameState board', board')             
-                                             | otherwise   = do
-                                                  return $ playMove player' board' move' 
-                                                       where 
-                                                            square :: Square
-                                                            square = board' !! fst move' !! snd move'
+                                              | isValidMove board' move' =
+                                                       return $ playMove player' board' move' 
+                                             | otherwise =
+                                                       putStrLn "Move invalid. Try again." >>
+                                                       return (getGameState board', board')      
+                                               
                                         updateGame :: (GameState, Board) -> IO () 
                                         updateGame (newState, newBoard) 
                                              | newState == In_Progress = do continueGame
