@@ -4,7 +4,7 @@ module TTT.Minimax where
 The MiniMax Algorithm
 This is an extra module outside of the regular haskell-dojo course.
 This implements a version of tictactoe to play against the  computer by using the minimax algorithm. 
-ACKNOLEDGEMNT: Graham Hutton from Programming in Haskell for explaining the algorithm and providing 
+ACKNOWLEDGEMNT: Graham Hutton from Programming in Haskell for explaining the algorithm and providing 
 an example.
 -}
 
@@ -91,9 +91,9 @@ nextPlayer board = if xs > os then O else X
 
 {- 
 Minimax Algorithm
-NOTE: data structure Square needs to be ordered: 
+NOTE: The Square data structure needs to be ordered: 
         data Square O | E | X deriving (Show, Eq, Ord)
-Ord ordering therefore produces O < E < X. This is to insure to calculate minimized O and maximized X
+Ord ordering therefore produces O < E < X. This is to ensure calculating minimized O and maximized X
 -}
 miniMax :: Tree Board -> Tree (Board, Player)
 miniMax (Node board []) =
@@ -109,9 +109,9 @@ miniMax (Node board trees)
                                     trees'  = map miniMax trees
                                     players = [player | Node (_,player) _ <- trees'] 
 
--- A list of best moves for a player given a specific board and depth of each of its branches
--- Generate Board Tree -> MiniMax the tree for the player-> Calculate depth of each best move
--- from the current board 
+-- A list of best moves (board configuration) for a player given a specific board 
+-- with the depth calculated
+-- -> generate player's board tree -> minimax the tree -> calculate depth of each best move
 bestMoveDepths :: Player -> Board -> [(Depth,Board)]
 bestMoveDepths player board = 
     [(depth board',board') | Node (board',player') branches' <- branches, player' == best]
@@ -120,7 +120,7 @@ bestMoveDepths player board =
             tree                   = pruneTree _TREE_DEPTH_ (boardTree player board)
             Node (_,best) branches = miniMax tree
             depth :: Board -> Depth
-            depth b                = pathDepth $ boardTree player b
+            depth board''          = pathDepth $ boardTree player board''
 
 -- Find the best move by calculating the shortest path from the best moves
 -- The main function to play the game
