@@ -20,8 +20,8 @@ import TTT.A4 ( getGameState, playMove, showSquares )
 {-
 A tree structure for the board tree
 Comprises of a node root of an element and branches derived from the root made up of subtrees. 
-Instead of having a separate data constructor (Leaf | Node a [subtrees]for Leaf, Leaf is a  node
-with no subtree: Leaf == Node a []
+Instead of having a separate data constructor for Leaf (i.e. Leaf a | Node a [Tree a]), Leaf is a node
+with no subtree: Leaf a == Node a []
 -}
 data Tree a = Node a [Tree a]
                 deriving Show
@@ -48,15 +48,15 @@ pathDepth (Node root branches) = 1 + sum [pathDepth branch | branch <- branches]
 ------------------------ TicTacToe Minimax Algorithm Implementation ----------------- 
 
 
--- A board tree that derives all possible board configurations (branches) from player's current node 
+-- A board tree that derives all possible board configurations (branches) from player's current board node 
 boardTree :: Player -> Board -> Tree Board
 boardTree player board =
     Node board [boardTree (switchPlayer player) board' | board' <- getAllValidBoards player board]
 
 
 -- All possible moves of size _SIZE_
--- (This ould've been done purely with Int's but implemented instead with the spirit of the haskell-dojo 
--- assignments
+-- (This could've been done purely with Int's but implemented instead in the spirit of the haskell-dojo 
+-- assignments)
 getAllMoves :: [Move]
 getAllMoves = [(x,y) | x <- rows, y <- cols]
                 where
@@ -109,7 +109,7 @@ miniMax (Node board trees)
                                     trees'  = map miniMax trees
                                     players = [player | Node (_,player) _ <- trees'] 
 
--- A list of best moves (board configuration) for a player given a specific board 
+-- A list of best moves (board configurations) for a player given a specific board 
 -- with the depth calculated
 -- -> generate player's board tree -> minimax the tree -> calculate depth of each best move
 bestMoveDepths :: Player -> Board -> [(Depth,Board)]
@@ -122,7 +122,7 @@ bestMoveDepths player board =
             depth :: Board -> Depth
             depth board''          = pathDepth $ boardTree player board''
 
--- Find the best move by calculating the shortest path from the best moves
+-- Find the best move by calculating the shortest path (minimum) from the list of best moves
 -- The main function to play the game
 playComputerMove :: Player -> Board -> IO (GameState, Board)
 playComputerMove player board = return (getGameState board', board')
