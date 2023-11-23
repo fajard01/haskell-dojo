@@ -61,9 +61,9 @@ getAllMoves :: [Move]
 getAllMoves = [(x,y) | x <- rows, y <- cols]
                 where
                     rows :: [Int]
-                    rows = [0 .. _SIZE_ - 1]
+                    rows = [convertRowIndex c | c <- take _SIZE_ ['a' ..]]
                     cols :: [Int]
-                    cols = [convertRowIndex c | c <- take _SIZE_ ['a' ..]]
+                    cols = [0 .. _SIZE_ - 1]
 
 -- Generate all possible board configurations by applying all valid moves by player to current board                    
 getAllValidBoards :: Player -> Board -> [Board]
@@ -123,9 +123,11 @@ bestMoveDepths player board =
             depth board''          = pathDepth $ boardTree player board''
 
 -- Find the best move by calculating the shortest path (minimum) from the list of best moves
--- The main function to play the game
+-- This is the main function to play the game
 playComputerMove :: Player -> Board -> IO (GameState, Board)
 playComputerMove player board = return (getGameState board', board')
                                 where
+                                    quickpath :: (Depth,Board)
                                     quickpath = minimum $ bestMoveDepths player board
+                                    board' :: Board
                                     board'    = snd quickpath
